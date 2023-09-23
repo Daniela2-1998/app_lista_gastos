@@ -1,3 +1,8 @@
+import React, {useEffect, useState} from 'react';
+import styled, {keyframes} from 'styled-components';
+import theme from '../theme';
+
+
 const slideDown = keyframes`
     0% {
         transform: translateY(-1.25rem); /* 20px */
@@ -49,3 +54,35 @@ const ContenedorAlerta = styled.div`
         text-align: center;
     }
 `;
+
+const Alerta = ({tipo, mensaje, estadoAlerta, cambiarEstadoAlerta}) => {
+    
+    // se ejecuta solo cuando cambia el estado
+    useEffect( () => {
+        let tiempo;
+
+        if(estadoAlerta === true){
+            tiempo = setTimeout( () => {
+                cambiarEstadoAlerta(false);
+            }, 4000);
+        }
+
+        // limpieza
+        return(() => clearTimeout(tiempo));
+
+    }, [estadoAlerta, cambiarEstadoAlerta]);
+
+
+
+    return (
+        <>
+            {estadoAlerta &&
+                <ContenedorAlerta tipo={tipo}>
+                    <p>{mensaje}</p>
+                </ContenedorAlerta>
+            }
+        </>
+    );
+}
+ 
+export default Alerta;

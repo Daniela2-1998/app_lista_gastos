@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import {auth} from '../firebase/FirebaseConfig';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
 import {useNavigate} from 'react-router-dom';
-
+import Alerta from './Alerta';
 
 const Svg = styled(SvgLogin)`
     width: 100%;
@@ -23,6 +23,9 @@ const RegistroUsuarios = () => {
     const [correo, establecerCorreo] = useState('');
     const [password, establecerPassword] = useState('');
     const [password2, establecerPassword2] = useState('');
+
+    const [estadoAlerta, cambiarEstadoAlerta] = useState(false);
+    const [alerta, cambiarAlerta] = useState('');
 
     const handleChange = (e) => {
         switch(e.target.name){
@@ -43,23 +46,38 @@ const RegistroUsuarios = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        cambiarEstadoAlerta(false);
+        cambiarAlerta({});
+
         // del lado del servidor
         // comprobamos validez del correo
         const expresionRegular = /[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/;
         if(! expresionRegular.test(correo)){
-            console.log('Ingresa un correo válido');
+            cambiarEstadoAlerta(true);
+            cambiarAlerta({
+                tipo: 'error',
+                mensaje: 'Por favor ingresa un correo válido'
+            });
             return;
         }
 
         // comprobacion de no dejar campos vacios
         if(correo === '' || password === '' || password2 === ''){
-            console.log('Por favor completa todos los campos');
+            cambiarEstadoAlerta(true);
+            cambiarAlerta({
+                tipo: 'error',
+                mensaje: 'Debes completar todos los campos'
+            });
             return;
         }
 
         // comprobar igualdad de contraseñas
         if(password !== password2){
-            console.log('Las contraseñas no coinciden');
+            cambiarEstadoAlerta(true);
+            cambiarAlerta({
+                tipo: 'error',
+                mensaje: 'Las contraseñas no coinciden'
+            });
             return;
         }
 
@@ -67,9 +85,16 @@ const RegistroUsuarios = () => {
         // AUTH DE FIREBASE
         try {
             await createUserWithEmailAndPassword(auth, correo, password);
-            console.log('Usuario creado con éxito');
+            cambiarEstadoAlerta(true);
+            cambiarAlerta({
+                tipo: 'exito',
+                mensaje: 'Usuario creado con éxito'
+            });
             navigate('/');
         } catch (error) {
+
+            cambiarEstadoAlerta(true);
+
             let mensaje;
             switch(error.code){
                 case 'auth/invalid-password':
@@ -85,7 +110,7 @@ const RegistroUsuarios = () => {
                     mensaje = 'Hubo un error al intentar crear la cuenta.'
                 break;
             }
-            console.log(mensaje);
+            cambiarAlerta({tipo: 'error', mensaje: mensaje});
         }
     }
 
@@ -132,6 +157,12 @@ const RegistroUsuarios = () => {
                     <Boton as="button" type='submit'>Crear cuenta</Boton>
                 </ContenedorBoton>
             </Formulario>
+            <Alerta 
+                tipo={alerta.tipo}
+                mensaje={alerta.mensaje}
+                estadoAlerta={estadoAlerta}
+                cambiarEstadoAlerta={cambiarEstadoAlerta}
+            />
         </>
     );
 }
