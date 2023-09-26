@@ -6,6 +6,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 const AuthContext = React.createContext();
 
 // hook para acceder al contexto
+// permite ver si el usuario esta conectado
 const useAuth = () => {
     return useContext(AuthContext);
 }
