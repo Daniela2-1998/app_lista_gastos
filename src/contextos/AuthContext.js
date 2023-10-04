@@ -31,7 +31,7 @@ const AuthProvider = ({children}) => {
     }, []);
 
     return ( 
-        <AuthContext.Provider value={{usuario: true}}>
+        <AuthContext.Provider value={{usuario: usuario}}>
             {!cargando && children}
         </AuthContext.Provider>
     );
