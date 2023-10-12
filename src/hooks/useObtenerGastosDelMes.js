@@ -34,7 +34,7 @@ const useObtenerGastosDelMes = () => {
         }
     }, [usuario]);
 
-    return [gastos];
+    return gastos;
 }
 
  
