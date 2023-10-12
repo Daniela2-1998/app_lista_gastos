@@ -9,8 +9,7 @@ const editarGasto = async({id, categoria, descripcion, cantidad, fecha}) => {
         categoria: categoria,
 		descripcion: descripcion,
 		cantidad: Number(cantidad),
-		fecha: fecha,
-		uidUsuario: uidUsuario
+		fecha: fecha
     });
     
 }
